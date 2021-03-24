@@ -55,7 +55,7 @@ You have to use `start`:
     (container)# ps
 
 
-# Liner
+# Linter
 
 Hadolint: https://github.com/hadolint/hadolint
 
