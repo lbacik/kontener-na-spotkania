@@ -1,6 +1,6 @@
 # Networking and netchat app
 
-Netchat - the simple (and well know :)) example of internet chat app build with netcat.
+Netchat - the simple (and well know :)) example of an internet chat app build with netcat.
 
 ## build the netchat app image
 
@@ -40,7 +40,6 @@ And now you can connect to the server (from different container) by:
 
 	$ docker run --rm -ti netchat:local nc 172.17.0.2 4444
 
-
 Check it by:
 
 	➜  ~ docker ps
@@ -48,14 +47,12 @@ Check it by:
 	9c5c552fd0b4   netchat:local   "nc 172.17.0.2 4444"   3 minutes ago   Up 3 minutes   4444/tcp   crazy_kare
 	d727ae4f20e9   netchat:local   "nc -lv -p 4444"       5 minutes ago   Up 5 minutes   4444/tcp   netchat
 
-
 ### bridge (system) network
 
-The problem is that you can connect to the server using the server container name:
+The problem: it is not possible to connect to the "server" using its (container) name:
 
 	$ docker run --rm -ti netchat:local nc netchat 4444
 	netchat: forward host lookup failed: Unknown host
-
 
 ### user-defined bridge networks
 
@@ -69,7 +66,6 @@ https://docs.docker.com/network/network-tutorial-standalone/
 	e7c46a5e6d27   none          null      local
 	a4d6e6293611   test          bridge    local
 
-
 **"Server"**
 
 	$ docker run -ti --name netchat --rm --net test netchat:local
@@ -79,11 +75,11 @@ Notice the "--net" argument!
 
 **"Client"**
 
+And the connection-by-name should works now:
+
 	$ docker run --rm -ti --net test netchat:local nc netchat 4444
 
-
 #### comparison of bridge networks
-
 
 **bridge (system)**
 
@@ -99,7 +95,6 @@ Notice the "--net" argument!
 	nl      UNCONN   0        0                     12:0                    *
 	nl      UNCONN   0        0                     15:0                    *
 	nl      UNCONN   0        0                     16:0                    *
-
 
 **user-defined bridge network**
 
@@ -120,13 +115,12 @@ Notice the "--net" argument!
 
 Notice the last two lines!
 
-The user-defined bridge networks use the internal dns which allows the container to resolve other containers names :)
+The user-defined bridge networks use the "internal dns" which allows the container to resolve other containers' names :)
 
 	$ docker run --rm --net test netchat:local cat /etc/resolv.conf
 	search Home
 	nameserver 127.0.0.11
 	options edns0 trust-ad ndots:0
-
 
 ## test 3 - two containers, two networks
 
@@ -139,12 +133,12 @@ Even if probably possible to set up some "router" connecting those two networks,
 
 	$ docker network connect network_A netchat-client
 
-It doesn't require any restart - the container is connected immidiatelly, and you can run on it:
+It doesn't require any restart - the container is connected immediately, and you can run on it:
 
 	(netchat-client) # nc netchat-server 4444
 
 ## test 4 - access the server (run in container) from the outside the docker environment
 
-The parameter "port", "p" - allow to map any of the host ports to the container one (https://docs.docker.com/config/containers/container-networking/):
+The parameter "port", "p" - allow to map any of the host ports to the container port (https://docs.docker.com/config/containers/container-networking/):
 
 	$ docker run --rm -ti -p 4444:4444 netchat:local
