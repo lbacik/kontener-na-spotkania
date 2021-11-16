@@ -75,7 +75,7 @@ Notice the "--net" argument!
 
 **"Client"**
 
-And the connection-by-name should works now:
+And the connection-by-name should work now:
 
 	$ docker run --rm -ti --net test netchat:local nc netchat 4444
 
